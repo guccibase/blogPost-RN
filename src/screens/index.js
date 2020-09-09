@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity } from 'react-native';
 import { Context } from '../context/BlogContext';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 
 const Index = ({ navigation }) => {
 	const { state, addBlogPost, deleteBlogPost } = useContext(Context);
@@ -37,6 +37,16 @@ const Index = ({ navigation }) => {
 			/>
 		</View>
 	);
+};
+
+Index.navigationOptions = ({ navigation }) => {
+	return {
+		headerRight: () => (
+			<TouchableOpacity onPress={() => navigation.navigate('Create')}>
+				<AntDesign name="plus" size={30} />
+			</TouchableOpacity>
+		)
+	};
 };
 
 const styles = StyleSheet.create({
