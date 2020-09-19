@@ -8,7 +8,6 @@ const Index = ({ navigation }) => {
 	return (
 		<View>
 			<Text>Blog Posts</Text>
-			<Button title="Add post" onPress={addBlogPost} />
 			<FlatList
 				data={state}
 				keyExtractor={(blogPost) => blogPost.title}
