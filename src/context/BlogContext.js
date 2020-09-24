@@ -1,12 +1,11 @@
 import CreateContext from './CreateContext';
+import jsonServer from '../api/jsonServer';
 
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'add':
-			return [
-				...state,
-				{ id: Math.floor(Math.random() * 9999), title: action.payload.title, content: action.payload.content }
-			];
+		case 'get':
+			return action.payload;
+
 		case 'delete':
 			return state.filter((blogPost) => blogPost.id !== action.payload);
 		case 'edit':
@@ -18,24 +17,35 @@ const reducer = (state, action) => {
 	}
 };
 
+const getBlogPosts = (dispatch) => {
+	return async () => {
+		const response = await jsonServer.get('/blogposts');
+		dispatch({ type: 'get', payload: response.data });
+	};
+};
 const addBlogPost = (dispatch) => {
-	return (title, content, callBack) => {
-		dispatch({ type: 'add', payload: { title, content } });
+	return async (title, content, callBack) => {
+		await jsonServer.post('/blogposts', { title, content });
+
 		callBack();
 	};
 };
 const deleteBlogPost = (dispatch) => {
-	return (id) => {
+	return async (id) => {
+		await jsonServer.delete(`/blogposts/${id}`);
 		dispatch({ type: 'delete', payload: id });
 	};
 };
 
 const editBlogPost = (dispatch) => {
-	return (title, content, id, callBack) => {
+	return async (title, content, id, callBack) => {
+		await jsonServer.put(`/blogposts/${id}`, { title, content });
 		dispatch({ type: 'edit', payload: { title, content, id } });
 		callBack();
 	};
 };
-export const { Context, Provider } = CreateContext(reducer, { addBlogPost, deleteBlogPost, editBlogPost }, [
-	{ title: 'My Post', content: 'My post content', id: 1 }
-]);
+export const { Context, Provider } = CreateContext(
+	reducer,
+	{ addBlogPost, deleteBlogPost, editBlogPost, getBlogPosts },
+	[]
+);
